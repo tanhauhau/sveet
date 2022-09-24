@@ -1,11 +1,11 @@
 <script>
-  import Sheet from './Sheet.svelte';
+  import Sveet from './Sveet.svelte';
   import TopBar from './TopBar.svelte';
   import BottomBar from './BottomBar.svelte';
 </script>
 
 <section class="container">
-  <Sheet />
+  <Sveet />
   <TopBar />
   <BottomBar />
 </section>

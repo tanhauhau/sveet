@@ -13,6 +13,7 @@
 		grid-column: calc(var(--column) + 2);
 		position: sticky;
 		top: 0;
+		text-align: center;
 	}
 	.active {
 		background-color: gray;

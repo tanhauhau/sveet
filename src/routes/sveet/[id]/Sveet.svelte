@@ -2,21 +2,25 @@
 	import Cell from './Cell.svelte';
 	import ColHeader from './ColHeader.svelte';
 	import RowHeader from './RowHeader.svelte';
-	let numOfColumns = 26;
-	let numOfRows = 50;
+	import { getColumnName, getRowIndex, createSveet } from './sveet';
+	let numberOfColumns = 26;
+	let numberOfRows = 50;
+	const sveet = createSveet({ numberOfColumns, numberOfRows });
 	let activeCell: { column: number; row: number } | null = {
 		column: 0,
 		row: 0
 	};
 </script>
 
-<main style:--rows={numOfRows} style:--columns={numOfColumns}>
+<main style:--rows={numberOfRows} style:--columns={numberOfColumns}>
 	<div>
-		{#each { length: numOfColumns } as _, column}
-			{@const colName = String.fromCharCode('A'.charCodeAt(0) + column)}
-			{#each { length: numOfRows } as _, row}
-				{@const rowIndex = row + 1}
+		{#each { length: numberOfColumns } as _, column}
+			{@const colName = getColumnName(column)}
+			{#each { length: numberOfRows } as _, row}
+				{@const rowIndex = getRowIndex(row)}
+				{@const cellName = colName + rowIndex}
 				<Cell
+					cell={sveet.get(cellName)}
 					{row}
 					{column}
 					active={activeCell?.column === column && activeCell?.row === row}
@@ -28,12 +32,12 @@
 			{/each}
 		{/each}
 
-		{#each { length: numOfColumns } as _, column}
+		{#each { length: numberOfColumns } as _, column}
 			{@const colName = String.fromCharCode('A'.charCodeAt(0) + column)}
 			<ColHeader active={activeCell?.column === column} {column} value={colName} />
 		{/each}
 
-		{#each { length: numOfRows } as _, row}
+		{#each { length: numberOfRows } as _, row}
 			{@const rowIndex = String(row + 1)}
 			<RowHeader active={activeCell?.row === row} {row} value={rowIndex} />
 		{/each}

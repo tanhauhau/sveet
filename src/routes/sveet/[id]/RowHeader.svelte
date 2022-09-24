@@ -13,6 +13,7 @@
 		grid-column: 1;
 		position: sticky;
 		left: 0;
+		text-align: center;
 	}
 	.active {
 		background-color: gray;
