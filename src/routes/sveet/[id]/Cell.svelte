@@ -6,7 +6,6 @@
 	export let row: number;
 	export let column: number;
 	export let active: boolean;
-	export let value: string;
 	export let cell: SveetCell;
 
 	enum Mode {

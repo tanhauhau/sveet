@@ -2,9 +2,10 @@
 	export let row: number;
 	export let value: string;
 	export let active: boolean;
+	export let element: HTMLElement;
 </script>
 
-<div class:active style:--row={row}>{value}</div>
+<div bind:this={element} class:active style:--row={row}>{value}</div>
 
 <style>
 	div {

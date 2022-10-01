@@ -2,9 +2,10 @@
 	export let column: number;
 	export let value: string;
 	export let active: boolean;
+	export let element: HTMLElement;
 </script>
 
-<div class:active style:--column={column}>{value}</div>
+<div bind:this={element} class:active style:--column={column}>{value}</div>
 
 <style>
 	div {
