@@ -82,33 +82,30 @@ function createSveetCell({
 }
 
 const formulaFunctions = {
-  sum(a, b) {
-    return a + b
-  }
+  sum: (a: string, b: string) => parseFloat(a) + parseFloat(b)
 }
 
 function createDerivedDisplayValueStore(formulaValue: string, sveet: Map<string, SveetCell>) {
   const obj = new Proxy({}, {
     get(_, propertyName) {
       if (propertyName === Symbol.unscopables) return [];
-      if (propertyName in formulaFunctions) return formulaFunctions[propertyName];
+      if (Object.hasOwn(formulaFunctions, propertyName)) return formulaFunctions[propertyName as keyof typeof formulaFunctions];
 
-      const displayValue = sveet.get(propertyName as string).displayValue;
+      const displayValue = sveet.get(propertyName as string)?.displayValue;
+      if (!displayValue) return [];
       if (detecting) {
         storesToSubscribe.push(displayValue);
       }
       return get(displayValue);
     },
-    has(_, key) {
-      return true;
-    }
+    has: () => true
   });
   // '= E3';
   // 'with(sveet) { return E3 }'
   // (sveet) => { with(sveet) { return E3 } }
 
   const fn = new Function('sveet', `with(sveet) { ${formulaValue.replace('=', 'return ')} }`);
-  let storesToSubscribe = [];
+  const storesToSubscribe: Writable<string>[] = [];
   let detecting = true;
   fn(obj);
   detecting = false;

@@ -1,3 +1,5 @@
+<!-- svelte-ignore a11y-autofocus -->
+
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { SveetCell } from './sveet';
