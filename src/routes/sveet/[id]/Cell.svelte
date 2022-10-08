@@ -44,7 +44,7 @@
 			autofocus
 			bind:value={$editValue}
 			on:blur={() => finishEditing(true)}
-			on:keydown={(event) => {
+			on:keydown|stopPropagation={(event) => {
 				switch(event.key) {
 					case 'Enter':
 						finishEditing(true);
