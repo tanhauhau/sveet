@@ -5,8 +5,8 @@
 </script>
 
 <section class="container">
-  <Sveet />
   <TopBar />
+  <Sveet />
   <BottomBar />
 </section>
 
