@@ -15,7 +15,11 @@ export function createSveet({
       sveet.set(columnName + rowIndex, cell);
     }
   }
-  return sveet;
+  return {
+    sveet,
+    numberOfRows,
+    numberOfColumns,
+  };
 }
 
 export interface SveetCell {
@@ -74,7 +78,7 @@ function createSveetCell({
             displayValue.set(formulaValue);
           }
         } else {
-          formula.set(lastSavedFormulaValue);
+          formula.set(formulaValue = lastSavedFormulaValue);
         }
       }
     }
@@ -118,9 +122,23 @@ function createDerivedDisplayValueStore(formulaValue: string, sveet: Map<string,
   return derivedStore;
 }
 
+const A_CHARCODE = 'A'.charCodeAt(0);
 export function getColumnName(column: number) {
-  return String.fromCharCode('A'.charCodeAt(0) + column);
+  return String.fromCharCode(A_CHARCODE + column);
 }
 export function getRowIndex(row: number) {
   return row + 1;
 }
+
+export function fromColumnName(column: string): number {
+  let result = 0;
+  for (let index = column.length - 1, base = 1; index >= 0; index--, base *= 26) {
+    const value = column.charCodeAt(index) - A_CHARCODE;
+    result += value * base;
+  }
+  return result;
+}
+export function fromRowIndex(row: string): number {
+  return Number(row) - 1;
+}
+

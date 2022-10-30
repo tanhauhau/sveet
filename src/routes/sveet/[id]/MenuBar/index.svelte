@@ -54,8 +54,7 @@
 <style>
 	menu {
 		height: 24px;
-		background: white;
-		border-bottom: 1px solid #333;
+		border-bottom: 1px solid var(--border-color);
 		margin: 0;
 		padding: 0 8px;
 	}
@@ -66,6 +65,6 @@
 		position: relative;
 	}
 	li:hover {
-		background-color: #0001;
+		background-color: var(--hover-color);
 	}
 </style>

@@ -54,7 +54,7 @@
 		align-items: center;
 	}
 	li:hover {
-		background-color: #0001;
+		background-color: var(--hover-color);
 	}
 	span {
 		flex: 1;

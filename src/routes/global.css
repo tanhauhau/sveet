@@ -1,3 +1,7 @@
 body {
   margin: 0;
 }
+:root {
+  --hover-color: #0001;
+  --border-color: #dadce0;
+}

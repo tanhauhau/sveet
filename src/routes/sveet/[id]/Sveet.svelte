@@ -1,25 +1,17 @@
 <script lang="ts">
-	import { tick } from 'svelte';
-
+	import { tick, getContext } from 'svelte';
+	import type { ActiveCell } from './types';
 	import Cell from './Cell.svelte';
 	import ColHeader from './ColHeader.svelte';
 	import RowHeader from './RowHeader.svelte';
 	import { getColumnName, getRowIndex, createSveet } from './sveet';
-	let numberOfColumns = 26;
-	let numberOfRows = 50;
+	import {isCurrentActiveElementInput} from './utils';
 
 	const rowHeaders: HTMLElement[] = [];
 	const columnHeaders: HTMLElement[] = [];
 
-	const sveet = createSveet({ numberOfColumns, numberOfRows });
-	type ActiveCell = {
-		column: number;
-		row: number;
-	};
-	let activeCell: ActiveCell = {
-		column: 0,
-		row: 0
-	};
+	const { activeCell, current_sveet } = getContext('sveet');
+	const { sveet, numberOfRows, numberOfColumns } = current_sveet;
 
 	const keyDownToDelta = {
 		ArrowUp: { rowDirection: -1 },
@@ -33,11 +25,14 @@
 			case 'ArrowUp':
 			case 'ArrowDown':
 			case 'ArrowLeft':
-			case 'ArrowRight':
-				const controlPressed = event.metaKey || event.ctrlKey;
-				moveActiveCell(keyDownToDelta[event.key], { allTheWay: controlPressed });
-				event.preventDefault();
+			case 'ArrowRight': {
+				if (!isCurrentActiveElementInput()) {
+					const controlPressed = event.metaKey || event.ctrlKey;
+					moveActiveCell(keyDownToDelta[event.key], { allTheWay: controlPressed });
+					event.preventDefault();
+				}
 				break;
+			}
 		}
 	}
 
@@ -47,19 +42,19 @@
 	) {
 		if (allTheWay) {
 			if (rowDirection === -1) {
-				activeCell.row = 0;
+				$activeCell.row = 0;
 			} else if (rowDirection === 1) {
-				activeCell.row = numberOfRows - 1;
+				$activeCell.row = numberOfRows - 1;
 			}
 			if (columnDirection === -1) {
-				activeCell.column = 0;
+				$activeCell.column = 0;
 			} else if (columnDirection === 1) {
-				activeCell.column = numberOfColumns - 1;
+				$activeCell.column = numberOfColumns - 1;
 			}
 		} else {
-			activeCell.row = Math.max(Math.min(activeCell.row + rowDirection, numberOfRows - 1), 0);
-			activeCell.column = Math.max(
-				Math.min(activeCell.column + columnDirection, numberOfColumns - 1),
+			$activeCell.row = Math.max(Math.min($activeCell.row + rowDirection, numberOfRows - 1), 0);
+			$activeCell.column = Math.max(
+				Math.min($activeCell.column + columnDirection, numberOfColumns - 1),
 				0
 			);
 		}
@@ -120,7 +115,11 @@
 
 <svelte:body on:keydown={onKeydown} />
 
-<main use:scrollIntoView={activeCell} style:--rows={numberOfRows} style:--columns={numberOfColumns}>
+<main
+	use:scrollIntoView={$activeCell}
+	style:--rows={numberOfRows}
+	style:--columns={numberOfColumns}
+>
 	<div>
 		{#each { length: numberOfColumns } as _, column}
 			{@const colName = getColumnName(column)}
@@ -131,9 +130,9 @@
 					cell={sveet.get(cellName)}
 					{row}
 					{column}
-					active={activeCell?.column === column && activeCell?.row === row}
+					active={$activeCell?.column === column && $activeCell?.row === row}
 					on:select={() => {
-						activeCell = { column, row };
+						$activeCell = { column, row };
 					}}
 				/>
 			{/each}
@@ -143,7 +142,7 @@
 			{@const colName = String.fromCharCode('A'.charCodeAt(0) + column)}
 			<ColHeader
 				bind:element={columnHeaders[column]}
-				active={activeCell?.column === column}
+				active={$activeCell?.column === column}
 				{column}
 				value={colName}
 			/>
@@ -153,7 +152,7 @@
 			{@const rowIndex = String(row + 1)}
 			<RowHeader
 				bind:element={rowHeaders[row]}
-				active={activeCell?.row === row}
+				active={$activeCell?.row === row}
 				{row}
 				value={rowIndex}
 			/>
