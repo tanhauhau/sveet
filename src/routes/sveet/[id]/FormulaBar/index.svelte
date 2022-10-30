@@ -22,6 +22,9 @@
 		}
 	}
 
+	function startEditing() {
+		formula.startEditing();
+	}
 	function finishEditing(save: boolean) {
 		formula.stopEditing(save);
 	}
@@ -52,6 +55,9 @@
 					finishEditing(false);
 					break;
 			}
+		}}
+		on:focus={() => {
+			startEditing()
 		}}
 		on:blur={() => {
 			finishEditing(true);
