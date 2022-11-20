@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { tick, getContext } from 'svelte';
-	import type { ActiveCell } from './types';
+	import type { ActiveCell, SveetContext } from './types';
 	import Cell from './Cell.svelte';
 	import ColHeader from './ColHeader.svelte';
 	import RowHeader from './RowHeader.svelte';
 	import { getColumnName, getRowIndex, createSveet } from './sveet';
-	import {isCurrentActiveElementInput} from './utils';
+	import { isCurrentActiveElementInput } from './utils';
 
 	const rowHeaders: HTMLElement[] = [];
 	const columnHeaders: HTMLElement[] = [];
 
-	const { activeCell, current_sveet } = getContext('sveet');
-	const { sveet, numberOfRows, numberOfColumns } = current_sveet;
+	const { currentSveet } = getContext('sveet') as SveetContext;
+	const { sveet, numberOfRows, numberOfColumns, activeCell } = currentSveet;
 
 	const keyDownToDelta = {
 		ArrowUp: { rowDirection: -1 },
@@ -21,6 +21,7 @@
 	} as const;
 
 	function onKeydown(event: KeyboardEvent) {
+		console.log({ key: event.key });
 		switch (event.key) {
 			case 'ArrowUp':
 			case 'ArrowDown':
@@ -32,6 +33,26 @@
 					event.preventDefault();
 				}
 				break;
+			}
+			case 'Backspace': {
+				if (!isCurrentActiveElementInput()) {
+					const columnName = getColumnName($activeCell.column);
+					const rowIndex = getRowIndex($activeCell.row);
+					const cell = sveet.get(columnName + rowIndex);
+					cell?.formula.set('', true);
+				}
+				break;
+			}
+			default: {
+				if (event.key.length === 1) {
+					if (!isCurrentActiveElementInput()) {
+						window.postMessage({
+							type: 'sveet:edit-cell',
+							cell: $activeCell,
+							triggerKey: event.key
+						});
+					}
+				}
 			}
 		}
 	}

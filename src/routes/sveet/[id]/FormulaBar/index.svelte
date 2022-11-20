@@ -3,7 +3,9 @@
 	import math_formula_20_filled from '@fluentui/svg-icons/icons/math_formula_20_filled.svg';
 	import { getContext } from 'svelte';
 	import { getColumnName, getRowIndex, fromColumnName, fromRowIndex } from '../sveet';
-	const { activeCell, current_sveet } = getContext('sveet');
+	import type { SveetContext } from '../types';
+	const { currentSveet } = getContext('sveet') as SveetContext;
+	const { activeCell } = currentSveet;
 
 	function onAddressChange(event) {
 		const newAddress = event.currentTarget.value;
@@ -27,7 +29,7 @@
 	}
 
 	$: cellName = getColumnName($activeCell.column) + getRowIndex($activeCell.row);
-	$: formula = current_sveet.sveet.get(cellName).formula;
+	$: formula = currentSveet.sveet.get(cellName).formula;
 </script>
 
 <div>

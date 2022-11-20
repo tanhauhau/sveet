@@ -10,11 +10,7 @@
 	let numberOfRows = 50;
 
   setContext('sveet', {
-    activeCell: writable({
-      column: 0,
-      row: 0
-    }),
-    current_sveet: createSveet({ numberOfColumns, numberOfRows }),
+    currentSveet: createSveet({ numberOfColumns, numberOfRows }),
     numberOfColumns,
     numberOfRows,
   })
