@@ -13,5 +13,6 @@
 <style>
 	header {
 		grid-area: top-bar;
+		z-index: var(--z-index-header);
 	}
 </style>

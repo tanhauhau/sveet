@@ -74,150 +74,173 @@ import phone_update_20_regular from '@fluentui/svg-icons/icons/phone_update_20_r
 import chat_bubbles_question_20_regular from '@fluentui/svg-icons/icons/chat_bubbles_question_20_regular.svg';
 import warning_20_regular from '@fluentui/svg-icons/icons/warning_20_regular.svg';
 import book_information_20_regular from '@fluentui/svg-icons/icons/book_information_20_regular.svg';
+import type { SveetCell } from '../types';
 
-type MenuAction = () => void;
-type BaseMenu = {
+type MenuAction = (context: { cell: SveetCell }) => void;
+export type MenuItem = {
+  type: 'menu';
   name: string;
   icon?: string;
   keyboardShortcut?: string;
-};
-type MenuItem = BaseMenu & {
   action: MenuAction;
+  children?: undefined;
 };
 type Divider = { type: 'divider' };
 export type Menu =
-  | (BaseMenu & {
+  | {
+    type: 'menu';
+    name: string;
+    icon?: string;
+    keyboardShortcut?: string;
     children: Array<Menu | MenuItem>;
-  })
+    action?: undefined;
+  }
   | Divider;
 
 export const menu: Menu[] = [
   {
+    type: 'menu',
     name: 'File',
     children: [
-      { name: 'New', icon: document_add_20_regular, action: notImplemented },
-      { name: 'Open', icon: folder_20_regular, action: notImplemented },
-      { name: 'Import', icon: document_20_regular, action: notImplemented },
-      { name: 'Make a copy', icon: document_copy_20_regular, action: notImplemented },
+      { type: 'menu', name: 'New', icon: document_add_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Open', icon: folder_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Import', icon: document_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Make a copy', icon: document_copy_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Share', icon: share_20_regular, action: notImplemented },
-      { name: 'Email', icon: mail_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Share', icon: share_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Email', icon: mail_20_regular, action: notImplemented },
       {
+        type: 'menu',
         name: 'Download',
         icon: arrow_download_20_regular,
         children: [
           {
+            type: 'menu',
             name: 'Microsoft Excel (.xlsx)',
             action: notImplemented
           },
-          { name: 'OpenDocument (.ods)', action: notImplemented },
-          { name: 'PDF (.pdf)', action: notImplemented },
-          { name: 'Web Page (.html)', action: notImplemented },
+          { type: 'menu', name: 'OpenDocument (.ods)', action: notImplemented },
+          { type: 'menu', name: 'PDF (.pdf)', action: notImplemented },
+          { type: 'menu', name: 'Web Page (.html)', action: notImplemented },
           {
+            type: 'menu',
             name: 'Comma-Separated Values (.csv)',
             action: notImplemented
           },
           {
+            type: 'menu',
             name: 'Tab-Separated Values (.tsv)',
             action: notImplemented
           }
         ]
       },
       { type: 'divider' },
-      { name: 'Rename', icon: rename_20_regular, action: notImplemented },
-      { name: 'Move', icon: folder_arrow_right_20_regular, action: notImplemented },
-      { name: 'Move to bin', icon: delete_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Rename', icon: rename_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Move', icon: folder_arrow_right_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Move to bin', icon: delete_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Details', icon: info_20_regular, action: notImplemented },
-      { name: 'Settings', icon: settings_20_regular, action: notImplemented }
+      { type: 'menu', name: 'Details', icon: info_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Settings', icon: settings_20_regular, action: notImplemented }
     ]
   },
   {
+    type: 'menu',
     name: 'Edit',
     children: [
-      { name: 'Undo', icon: arrow_undo_20_regular, action: notImplemented },
-      { name: 'Redo', icon: arrow_redo_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Undo', icon: arrow_undo_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Redo', icon: arrow_redo_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Cut', icon: cut_20_regular, action: notImplemented },
-      { name: 'Copy', icon: document_copy_20_regular, action: notImplemented },
-      { name: 'Paste', icon: clipboard_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Cut', icon: cut_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Copy', icon: document_copy_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Paste', icon: clipboard_20_regular, action: notImplemented },
       {
-        name: 'Paste Special', icon: clipboard_20_regular, children: [
-          { name: 'Values only', action: notImplemented },
-          { name: 'Format only', action: notImplemented },
-          { name: 'Formula only', action: notImplemented },
-          { name: 'Conditional formatting only', action: notImplemented },
-          { name: 'Data validation only', action: notImplemented },
+        type: 'menu',
+        name: 'Paste Special',
+        icon: clipboard_20_regular,
+        children: [
+          { type: 'menu', name: 'Values only', action: notImplemented },
+          { type: 'menu', name: 'Format only', action: notImplemented },
+          { type: 'menu', name: 'Formula only', action: notImplemented },
+          { type: 'menu', name: 'Conditional formatting only', action: notImplemented },
+          { type: 'menu', name: 'Data validation only', action: notImplemented },
           { type: 'divider' },
-          { name: 'Transposed', action: notImplemented },
+          { type: 'menu', name: 'Transposed', action: notImplemented },
           { type: 'divider' },
-          { name: 'Column width only', action: notImplemented },
-          { name: 'All except borders', action: notImplemented },
+          { type: 'menu', name: 'Column width only', action: notImplemented },
+          { type: 'menu', name: 'All except borders', action: notImplemented }
         ]
       },
       { type: 'divider' },
-      { name: 'Move', icon: arrow_move_20_regular, children: [] },
+      { type: 'menu', name: 'Move', icon: arrow_move_20_regular, children: [] },
       {
-        name: 'Delete', icon: delete_20_regular, children: [
-          { name: 'Values', action: notImplemented },
-          { name: 'Row', action: notImplemented },
-          { name: 'Column', action: notImplemented },
+        type: 'menu',
+        name: 'Delete',
+        icon: delete_20_regular,
+        children: [
+          { type: 'menu', name: 'Values', action: notImplemented },
+          { type: 'menu', name: 'Row', action: notImplemented },
+          { type: 'menu', name: 'Column', action: notImplemented }
         ]
       },
       { type: 'divider' },
-      { name: 'Find and replace', icon: table_search_20_regular, children: [] },
+      { type: 'menu', name: 'Find and replace', icon: table_search_20_regular, children: [] }
     ]
   },
   {
+    type: 'menu',
     name: 'View',
     children: [
       {
+        type: 'menu',
         name: 'Show',
         icon: eye_20_regular,
         children: [
-          { name: 'Formula bar', action: notImplemented },
-          { name: 'Gridlines', action: notImplemented },
-          { name: 'Formulae', action: notImplemented },
-          { name: 'Protected Ranges', action: notImplemented }
+          { type: 'menu', name: 'Formula bar', action: notImplemented },
+          { type: 'menu', name: 'Gridlines', action: notImplemented },
+          { type: 'menu', name: 'Formulae', action: notImplemented },
+          { type: 'menu', name: 'Protected Ranges', action: notImplemented }
         ]
       },
       {
+        type: 'menu',
         name: 'Freeze',
         icon: table_freeze_column_and_row_20_regular,
         children: [
-          { name: 'No rows', action: notImplemented },
-          { name: '1 row', action: notImplemented },
-          { name: '2 rows', action: notImplemented },
+          { type: 'menu', name: 'No rows', action: notImplemented },
+          { type: 'menu', name: '1 row', action: notImplemented },
+          { type: 'menu', name: '2 rows', action: notImplemented },
           { type: 'divider' },
-          { name: 'No columns', action: notImplemented },
-          { name: '1 column', action: notImplemented },
-          { name: '2 columns', action: notImplemented },
+          { type: 'menu', name: 'No columns', action: notImplemented },
+          { type: 'menu', name: '1 column', action: notImplemented },
+          { type: 'menu', name: '2 columns', action: notImplemented }
         ]
       },
       {
+        type: 'menu',
         name: 'Group',
         icon: group_20_regular,
         children: [
-          { name: 'Group', action: notImplemented },
-          { name: 'Ungroup', action: notImplemented },
+          { type: 'menu', name: 'Group', action: notImplemented },
+          { type: 'menu', name: 'Ungroup', action: notImplemented }
         ]
       },
       { type: 'divider' },
       {
+        type: 'menu',
         name: 'Zoom',
         icon: zoom_in_20_regular,
         children: [
-          { name: '50%', action: notImplemented },
-          { name: '75%', action: notImplemented },
-          { name: '90%', action: notImplemented },
-          { name: '100%', action: notImplemented },
-          { name: '125%', action: notImplemented },
-          { name: '150%', action: notImplemented },
-          { name: '200%', action: notImplemented },
-
+          { type: 'menu', name: '50%', action: notImplemented },
+          { type: 'menu', name: '75%', action: notImplemented },
+          { type: 'menu', name: '90%', action: notImplemented },
+          { type: 'menu', name: '100%', action: notImplemented },
+          { type: 'menu', name: '125%', action: notImplemented },
+          { type: 'menu', name: '150%', action: notImplemented },
+          { type: 'menu', name: '200%', action: notImplemented }
         ]
       },
       {
+        type: 'menu',
         name: 'Full screen',
         icon: full_screen_maximize_20_regular,
         action: notImplemented
@@ -225,185 +248,360 @@ export const menu: Menu[] = [
     ]
   },
   {
-    name: 'Insert', children: [
+    type: 'menu',
+    name: 'Insert',
+    children: [
       {
-        name: 'Cells', icon: document_20_regular, children: [
-          { name: 'Insert cells and shift right', action: notImplemented },
-          { name: 'Insert cells and shift down', action: notImplemented },
-        ]
-      },
-      {
-        name: 'Rows', icon: table_insert_row_20_regular,
+        type: 'menu',
+        name: 'Cells',
+        icon: document_20_regular,
         children: [
-          { name: 'Insert 1 row above', action: notImplemented },
-          { name: 'Insert 1 row below', action: notImplemented },
+          { type: 'menu', name: 'Insert cells and shift right', action: notImplemented },
+          { type: 'menu', name: 'Insert cells and shift down', action: notImplemented }
         ]
       },
       {
-        name: 'Columns', icon: table_insert_column_20_regular, children: [
-          { name: 'Insert 1 column to the left', action: notImplemented },
-          { name: 'Insert 1 column to the right', action: notImplemented },
+        type: 'menu',
+        name: 'Rows',
+        icon: table_insert_row_20_regular,
+        children: [
+          { type: 'menu', name: 'Insert 1 row above', action: notImplemented },
+          { type: 'menu', name: 'Insert 1 row below', action: notImplemented }
         ]
       },
-      { name: 'Sheet', icon: table_multiple_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Columns',
+        icon: table_insert_column_20_regular,
+        children: [
+          { type: 'menu', name: 'Insert 1 column to the left', action: notImplemented },
+          { type: 'menu', name: 'Insert 1 column to the right', action: notImplemented }
+        ]
+      },
+      { type: 'menu', name: 'Sheet', icon: table_multiple_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Chart', icon: chart_multiple_20_regular, action: notImplemented },
-      { name: 'Pivot Table', icon: pivot_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Chart', icon: chart_multiple_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Pivot Table', icon: pivot_20_regular, action: notImplemented },
       {
-        name: 'Image', icon: image_20_regular, children: [
+        type: 'menu',
+        name: 'Image',
+        icon: image_20_regular,
+        children: [
           {
-            name: 'Insert an image in the cell', action: notImplemented
+            type: 'menu',
+            name: 'Insert an image in the cell',
+            action: notImplemented
           },
           {
-            name: 'Insert an image over the cell', action: notImplemented
-          },
+            type: 'menu',
+            name: 'Insert an image over the cell',
+            action: notImplemented
+          }
         ]
       },
-      { name: 'Drawing', icon: draw_image_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Drawing', icon: draw_image_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Function', icon: math_formula_20_regular, children: [] },
-      { name: 'Link', icon: link_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Function', icon: math_formula_20_regular, children: [] },
+      { type: 'menu', name: 'Link', icon: link_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Tick box', icon: checkbox_checked_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Tick box', icon: checkbox_checked_20_regular, action: notImplemented },
       {
-        name: 'Smart chips', icon: tag_multiple_20_regular, children: [
-          { name: 'People', icon: math_formula_20_regular, action: notImplemented },
-          { name: 'Files', icon: math_formula_20_regular, action: notImplemented },
-          { name: 'Calendar events', icon: math_formula_20_regular, action: notImplemented },
+        type: 'menu',
+        name: 'Smart chips',
+        icon: tag_multiple_20_regular,
+        children: [
+          { type: 'menu', name: 'People', icon: math_formula_20_regular, action: notImplemented },
+          { type: 'menu', name: 'Files', icon: math_formula_20_regular, action: notImplemented },
+          {
+            type: 'menu',
+            name: 'Calendar events',
+            icon: math_formula_20_regular,
+            action: notImplemented
+          }
         ]
       },
       { type: 'divider' },
-      { name: 'Comment', icon: comment_20_regular, action: notImplemented },
-      { name: 'Note', icon: note_add_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Comment', icon: comment_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Note', icon: note_add_20_regular, action: notImplemented }
     ]
   },
   {
-    name: 'Format', children: [
+    type: 'menu',
+    name: 'Format',
+    children: [
       {
-        name: 'Theme', icon: color_20_regular, action: notImplemented
+        type: 'menu',
+        name: 'Theme',
+        icon: color_20_regular,
+        action: notImplemented
       },
       { type: 'divider' },
-      { name: 'Number', icon: number_circle_1_20_regular, children: [] },
+      { type: 'menu', name: 'Number', icon: number_circle_1_20_regular, children: [] },
       {
-        name: 'Text', icon: text_bold_20_regular, children: [
-          { name: 'Bold', icon: text_bold_20_regular, action: notImplemented },
-          { name: 'Italic', icon: text_italic_20_regular, action: notImplemented },
-          { name: 'Underline', icon: text_underline_20_regular, action: notImplemented },
-          { name: 'Strikethrough', icon: text_strikethrough_20_regular, action: notImplemented },
+        type: 'menu',
+        name: 'Text',
+        icon: text_bold_20_regular,
+        children: [
+          {
+            type: 'menu',
+            name: 'Bold',
+            icon: text_bold_20_regular,
+            action: ({ cell }) => cell.style.toggleStyle('bold')
+          },
+          {
+            type: 'menu',
+            name: 'Italic',
+            icon: text_italic_20_regular,
+            action: ({ cell }) => cell.style.toggleStyle('italic')
+          },
+          {
+            type: 'menu',
+            name: 'Underline',
+            icon: text_underline_20_regular,
+            action: ({ cell }) => cell.style.toggleStyle('underline')
+          },
+          {
+            type: 'menu',
+            name: 'Strikethrough',
+            icon: text_strikethrough_20_regular,
+            action: ({ cell }) => cell.style.toggleStyle('strikeThrough')
+          }
         ]
       },
       {
-        name: 'Alignment', icon: text_align_center_20_regular, children: [
-          { name: 'Left', icon: text_align_left_20_regular, action: notImplemented },
-          { name: 'Center', icon: text_align_center_20_regular, action: notImplemented },
-          { name: 'Right', icon: text_align_right_20_regular, action: notImplemented },
+        type: 'menu',
+        name: 'Alignment',
+        icon: text_align_center_20_regular,
+        children: [
+          { type: 'menu', name: 'Left', icon: text_align_left_20_regular, action: notImplemented },
+          {
+            type: 'menu',
+            name: 'Center',
+            icon: text_align_center_20_regular,
+            action: notImplemented
+          },
+          {
+            type: 'menu',
+            name: 'Right',
+            icon: text_align_right_20_regular,
+            action: notImplemented
+          },
           { type: 'divider' },
-          { name: 'Top', icon: textbox_align_top_20_regular, action: notImplemented },
-          { name: 'Middle', icon: textbox_align_middle_20_regular, action: notImplemented },
-          { name: 'Bottom', icon: textbox_align_bottom_20_regular, action: notImplemented },
-
+          { type: 'menu', name: 'Top', icon: textbox_align_top_20_regular, action: notImplemented },
+          {
+            type: 'menu',
+            name: 'Middle',
+            icon: textbox_align_middle_20_regular,
+            action: notImplemented
+          },
+          {
+            type: 'menu',
+            name: 'Bottom',
+            icon: textbox_align_bottom_20_regular,
+            action: notImplemented
+          }
         ]
       },
       {
-        name: 'Wrapping', icon: text_wrap_20_regular, children: [
-          { name: 'Overflow', icon: text_wrap_off_20_regular, action: notImplemented },
-          { name: 'Wrap', icon: text_wrap_20_regular, action: notImplemented },
-          { name: 'Clip', icon: align_stretch_horizontal_20_regular, action: notImplemented },
+        type: 'menu',
+        name: 'Wrapping',
+        icon: text_wrap_20_regular,
+        children: [
+          {
+            type: 'menu',
+            name: 'Overflow',
+            icon: text_wrap_off_20_regular,
+            action: notImplemented
+          },
+          { type: 'menu', name: 'Wrap', icon: text_wrap_20_regular, action: notImplemented },
+          {
+            type: 'menu',
+            name: 'Clip',
+            icon: align_stretch_horizontal_20_regular,
+            action: notImplemented
+          }
         ]
       },
       {
-        name: 'Rotation', icon: rotate_right_20_regular, children: [
-          { name: 'None', action: notImplemented },
-          { name: 'Tilt up', action: notImplemented },
-          { name: 'Tilt down', action: notImplemented },
-          { name: 'Stack vertically', action: notImplemented },
-          { name: 'Rotate up', action: notImplemented },
-          { name: 'Rotate down', action: notImplemented },
+        type: 'menu',
+        name: 'Rotation',
+        icon: rotate_right_20_regular,
+        children: [
+          { type: 'menu', name: 'None', action: notImplemented },
+          { type: 'menu', name: 'Tilt up', action: notImplemented },
+          { type: 'menu', name: 'Tilt down', action: notImplemented },
+          { type: 'menu', name: 'Stack vertically', action: notImplemented },
+          { type: 'menu', name: 'Rotate up', action: notImplemented },
+          { type: 'menu', name: 'Rotate down', action: notImplemented },
           { type: 'divider' },
           {
-            name: 'Custom angle', children: [
-              { name: '-90%', action: notImplemented },
-              { name: '-75%', action: notImplemented },
-              { name: '-60%', action: notImplemented },
-              { name: '-45%', action: notImplemented },
-              { name: '-30%', action: notImplemented },
-              { name: '-15%', action: notImplemented },
-              { name: '0%', action: notImplemented },
-              { name: '15%', action: notImplemented },
-              { name: '30%', action: notImplemented },
-              { name: '45%', action: notImplemented },
-              { name: '60%', action: notImplemented },
-              { name: '75%', action: notImplemented },
-              { name: '90%', action: notImplemented },
+            type: 'menu',
+            name: 'Custom angle',
+            children: [
+              { type: 'menu', name: '-90%', action: notImplemented },
+              { type: 'menu', name: '-75%', action: notImplemented },
+              { type: 'menu', name: '-60%', action: notImplemented },
+              { type: 'menu', name: '-45%', action: notImplemented },
+              { type: 'menu', name: '-30%', action: notImplemented },
+              { type: 'menu', name: '-15%', action: notImplemented },
+              { type: 'menu', name: '0%', action: notImplemented },
+              { type: 'menu', name: '15%', action: notImplemented },
+              { type: 'menu', name: '30%', action: notImplemented },
+              { type: 'menu', name: '45%', action: notImplemented },
+              { type: 'menu', name: '60%', action: notImplemented },
+              { type: 'menu', name: '75%', action: notImplemented },
+              { type: 'menu', name: '90%', action: notImplemented }
             ]
-          },
-
+          }
         ]
       },
       { type: 'divider' },
       {
-        name: 'Font size', icon: text_font_size_20_regular, children: [
-          { name: '6', action: notImplemented },
-          { name: '7', action: notImplemented },
-          { name: '8', action: notImplemented },
-          { name: '9', action: notImplemented },
-          { name: '10', action: notImplemented },
-          { name: '11', action: notImplemented },
-          { name: '12', action: notImplemented },
-          { name: '14', action: notImplemented },
-          { name: '18', action: notImplemented },
-          { name: '24', action: notImplemented },
-          { name: '36', action: notImplemented },
+        type: 'menu',
+        name: 'Font size',
+        icon: text_font_size_20_regular,
+        children: [
+          {
+            type: 'menu',
+            name: '6',
+            action: ({ cell }) => cell.style.setStyle('fontSize', 6)
+          },
+          { type: 'menu', name: '7', action: ({ cell }) => cell.style.setStyle('fontSize', 7) },
+          { type: 'menu', name: '8', action: ({ cell }) => cell.style.setStyle('fontSize', 8) },
+          { type: 'menu', name: '9', action: ({ cell }) => cell.style.setStyle('fontSize', 9) },
+          { type: 'menu', name: '10', action: ({ cell }) => cell.style.setStyle('fontSize', 10) },
+          { type: 'menu', name: '11', action: ({ cell }) => cell.style.setStyle('fontSize', 11) },
+          { type: 'menu', name: '12', action: ({ cell }) => cell.style.setStyle('fontSize', 12) },
+          { type: 'menu', name: '14', action: ({ cell }) => cell.style.setStyle('fontSize', 14) },
+          { type: 'menu', name: '18', action: ({ cell }) => cell.style.setStyle('fontSize', 18) },
+          { type: 'menu', name: '24', action: ({ cell }) => cell.style.setStyle('fontSize', 24) },
+          { type: 'menu', name: '36', action: ({ cell }) => cell.style.setStyle('fontSize', 36) }
         ]
       },
-      { name: 'Merge cell', icon: table_cells_merge_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Merge cell',
+        icon: table_cells_merge_20_regular,
+        action: notImplemented
+      },
       { type: 'divider' },
-      { name: 'Conditional formatting', icon: paint_brush_20_regular, action: notImplemented },
-      { name: 'Alternating colors', icon: dark_theme_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Conditional formatting',
+        icon: paint_brush_20_regular,
+        action: notImplemented
+      },
+      {
+        type: 'menu',
+        name: 'Alternating colors',
+        icon: dark_theme_20_regular,
+        action: notImplemented
+      },
       { type: 'divider' },
-      { name: 'Clear formatting', icon: text_clear_formatting_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Clear formatting',
+        icon: text_clear_formatting_20_regular,
+        action: notImplemented
+      }
     ]
   },
   {
-    name: 'Data', children: [
-      { name: 'Sort sheet', icon: arrow_sort_20_regular, children: [] },
-      { name: 'Sort range', icon: arrow_sort_20_regular, children: [] },
+    type: 'menu',
+    name: 'Data',
+    children: [
+      { type: 'menu', name: 'Sort sheet', icon: arrow_sort_20_regular, children: [] },
+      { type: 'menu', name: 'Sort range', icon: arrow_sort_20_regular, children: [] },
       { type: 'divider' },
-      { name: 'Create filter', icon: filter_20_regular, children: [] },
-      { name: 'Filter view', icon: table_search_20_regular, children: [] },
-      { name: 'Add a Slicer', icon: filter_20_regular, children: [] },
+      { type: 'menu', name: 'Create filter', icon: filter_20_regular, children: [] },
+      { type: 'menu', name: 'Filter view', icon: table_search_20_regular, children: [] },
+      { type: 'menu', name: 'Add a Slicer', icon: filter_20_regular, children: [] },
       { type: 'divider' },
-      { name: 'Protect sheets and ranges', icon: lock_shield_20_regular, action: notImplemented },
-      { name: 'Named ranges', icon: table_20_regular, action: notImplemented },
-      { name: 'Named functions', icon: math_formula_20_regular, action: notImplemented },
-      { name: 'Randomise range', icon: arrow_shuffle_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Protect sheets and ranges',
+        icon: lock_shield_20_regular,
+        action: notImplemented
+      },
+      { type: 'menu', name: 'Named ranges', icon: table_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Named functions',
+        icon: math_formula_20_regular,
+        action: notImplemented
+      },
+      {
+        type: 'menu',
+        name: 'Randomise range',
+        icon: arrow_shuffle_20_regular,
+        action: notImplemented
+      },
       { type: 'divider' },
-      { name: 'Column stats', icon: lightbulb_20_regular, action: notImplemented },
-      { name: 'Data validation', icon: table_lightning_20_regular, action: notImplemented },
-      { name: 'Data clean-up', icon: wand_20_regular, children: [] },
-      { name: 'Split text to columns', icon: split_vertical_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Column stats', icon: lightbulb_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Data validation',
+        icon: table_lightning_20_regular,
+        action: notImplemented
+      },
+      { type: 'menu', name: 'Data clean-up', icon: wand_20_regular, children: [] },
+      {
+        type: 'menu',
+        name: 'Split text to columns',
+        icon: split_vertical_20_regular,
+        action: notImplemented
+      }
     ]
   },
   {
-    name: 'Tools', children: [
-      { name: 'Spelling', icon: text_grammar_checkmark_20_regular, action: notImplemented },
-      { name: 'Auto-complete', icon: text_grammar_wand_20_regular, action: notImplemented },
+    type: 'menu',
+    name: 'Tools',
+    children: [
+      {
+        type: 'menu',
+        name: 'Spelling',
+        icon: text_grammar_checkmark_20_regular,
+        action: notImplemented
+      },
+      {
+        type: 'menu',
+        name: 'Auto-complete',
+        icon: text_grammar_wand_20_regular,
+        action: notImplemented
+      },
       { type: 'divider' },
-      { name: 'Notification settings', icon: alert_20_regular, action: notImplemented },
-      { name: 'Accessibility', icon: accessibility_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Notification settings',
+        icon: alert_20_regular,
+        action: notImplemented
+      },
+      {
+        type: 'menu',
+        name: 'Accessibility',
+        icon: accessibility_20_regular,
+        action: notImplemented
+      }
     ]
   },
-  { name: 'Extensions', children: [] },
+  { type: 'menu', name: 'Extensions', children: [] },
   {
-    name: 'Help', children: [
-      { name: 'Help', icon: question_circle_20_regular, action: notImplemented },
-      { name: 'Training', icon: hat_graduation_20_regular, action: notImplemented },
-      { name: 'Updates', icon: phone_update_20_regular, action: notImplemented },
+    type: 'menu',
+    name: 'Help',
+    children: [
+      { type: 'menu', name: 'Help', icon: question_circle_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Training', icon: hat_graduation_20_regular, action: notImplemented },
+      { type: 'menu', name: 'Updates', icon: phone_update_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'Help Sveet Improve', icon: chat_bubbles_question_20_regular, action: notImplemented },
-      { name: 'Report abuse', icon: warning_20_regular, action: notImplemented },
+      {
+        type: 'menu',
+        name: 'Help Sveet Improve',
+        icon: chat_bubbles_question_20_regular,
+        action: notImplemented
+      },
+      { type: 'menu', name: 'Report abuse', icon: warning_20_regular, action: notImplemented },
       { type: 'divider' },
-      { name: 'About', icon: book_information_20_regular, action: notImplemented },
+      { type: 'menu', name: 'About', icon: book_information_20_regular, action: notImplemented }
     ]
   }
 ];

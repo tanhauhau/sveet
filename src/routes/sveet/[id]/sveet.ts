@@ -1,19 +1,17 @@
 import { writable, type Writable, derived, get } from 'svelte/store';
-import type { SveetCell } from './types';
+import type { SveetCellStyle, Sveet, SveetCell } from './types';
 export function createSveet({
 	numberOfRows,
 	numberOfColumns
 }: {
 	numberOfRows: number;
 	numberOfColumns: number;
-}) {
+}): Sveet {
 	const sveet = new Map();
 	for (let r = 0; r < numberOfRows; r++) {
 		for (let c = 0; c < numberOfColumns; c++) {
-			const columnName = getColumnName(c);
-			const rowIndex = getRowIndex(r);
 			const cell = createSveetCell({ row: r, column: c, sveet });
-			sveet.set(columnName + rowIndex, cell);
+			sveet.set(rowAndColumnToAddress(c, r), cell);
 		}
 	}
 	const activeCell = writable({
@@ -22,7 +20,17 @@ export function createSveet({
 	});
 
 	return {
-		sveet,
+		sveet: {
+			get(address: string) {
+				return sveet.get(address)
+			},
+			set(address: string, cell: SveetCell) {
+				return sveet.set(address, cell)
+			},
+			getByColumnAndRow({ column, row }) {
+				return sveet.get(rowAndColumnToAddress(column, row));
+			},
+		},
 		numberOfRows,
 		numberOfColumns,
 		activeCell: {
@@ -39,6 +47,12 @@ export function createSveet({
 	};
 }
 
+function rowAndColumnToAddress(column: number, row: number) {
+	const columnName = getColumnName(column);
+	const rowIndex = getRowIndex(row);
+	return columnName + rowIndex
+}
+
 function createSveetCell({
 	row,
 	column,
@@ -53,6 +67,7 @@ function createSveetCell({
 	let lastSavedFormulaValue: string;
 	let cleanup: () => void;
 	const formula = writable(formulaValue);
+	const style = writable<SveetCellStyle>({});
 
 	return {
 		row,
@@ -91,7 +106,25 @@ function createSveetCell({
 					formula.set((formulaValue = lastSavedFormulaValue));
 				}
 			}
-		}
+		},
+		style: {
+			set: style.set,
+			update: style.update,
+			subscribe: style.subscribe,
+			setStyle: (key, value) => {
+				style.update($style => {
+					$style[key] = value;
+					return $style;
+				})
+			},
+			toggleStyle: (key) => {
+				style.update($style => {
+					// ???
+					$style[key] = !$style[key];
+					return $style;
+				})
+			}
+		},
 	};
 }
 

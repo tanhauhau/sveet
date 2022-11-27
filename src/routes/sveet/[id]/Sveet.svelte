@@ -36,9 +36,7 @@
 			}
 			case 'Backspace': {
 				if (!isCurrentActiveElementInput()) {
-					const columnName = getColumnName($activeCell.column);
-					const rowIndex = getRowIndex($activeCell.row);
-					const cell = sveet.get(columnName + rowIndex);
+					const cell = sveet.getByColumnAndRow($activeCell);
 					cell?.formula.set('', true);
 				}
 				break;
@@ -143,12 +141,9 @@
 >
 	<div>
 		{#each { length: numberOfColumns } as _, column}
-			{@const colName = getColumnName(column)}
 			{#each { length: numberOfRows } as _, row}
-				{@const rowIndex = getRowIndex(row)}
-				{@const cellName = colName + rowIndex}
 				<Cell
-					cell={sveet.get(cellName)}
+					cell={sveet.getByColumnAndRow({ column, row })}
 					{row}
 					{column}
 					active={$activeCell?.column === column && $activeCell?.row === row}
@@ -186,6 +181,7 @@
 		background-color: peachpuff;
 		grid-area: sheet;
 		overflow: scroll;
+		z-index: var(--z-index-main);
 	}
 	div {
 		display: grid;

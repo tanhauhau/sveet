@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { GetStoreValue } from 'src/lib/type-utilties';
+
 	import { createEventDispatcher, getContext, onMount, tick } from 'svelte';
 	import type { SveetCell, SveetContext } from './types';
 	const dispatch = createEventDispatcher();
@@ -34,6 +36,7 @@
 	let mode = Mode.DisplayValue;
 	let editValue = cell.formula;
 	let displayValue = cell.displayValue;
+	let style = cell.style;
 	let measureSpanElement: HTMLSpanElement;
 	let cellElement: HTMLDivElement;
 	let cellWidth: number;
@@ -60,14 +63,36 @@
 			);
 		}
 	}
+	function getStyle(style: GetStoreValue<SveetCell['style']>) {
+		const result: Record<string, string> = {};
+		if (style.bold) result['font-weight'] = 'bold';
+		if (style.italic) result['font-style'] = 'italic';
+		if (style.underline || style.strikeThrough) {
+			const textDecoration: string[] = [];
+			if (style.underline) textDecoration.push('underline');
+			if (style.strikeThrough) textDecoration.push('line-through');
+			result['text-decoration'] = textDecoration.join(' ');
+		}
+		if (style.fontSize) {
+			result['font-size'] = style.fontSize + 'px';
+		}
+		let css = '';
+		for (const key in result) {
+			css += `${key}:${result[key]};`;
+		}
+		return css;
+	}
 </script>
 
 <div
 	bind:this={cellElement}
-	style:--row={row}
-	style:--column={column}
+	style="
+		--row: {row};
+		--column: {column};
+		width: {mode === Mode.Editing ? width + 'px' : 'unset'};
+		{getStyle($style)}
+	"
 	class:active
-	style:width={mode === Mode.Editing ? width + 'px' : 'unset'}
 	on:click={() => dispatch('select')}
 	on:dblclick={() => {
 		if (mode === Mode.DisplayValue) {

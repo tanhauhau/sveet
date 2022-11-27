@@ -31,5 +31,8 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr 50px;
     grid-template-areas: "top-bar" "sheet" "bottom-bar";
+
+    --z-index-header: 2;
+    --z-index-main: 1;
   }
 </style>
