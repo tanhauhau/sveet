@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { tick, getContext } from 'svelte';
+	import ColumnResizeGuide from './ColumnResizeGuide.svelte';
 	import type { ActiveCell, SveetContext } from './types';
 	import Cell from './Cell.svelte';
 	import ColHeader from './ColHeader.svelte';
 	import RowHeader from './RowHeader.svelte';
-	import { getColumnName, getRowIndex, createSveet } from './sveet';
 	import { isCurrentActiveElementInput } from './utils';
 
 	const rowHeaders: HTMLElement[] = [];
@@ -12,6 +12,44 @@
 
 	const { currentSveet } = getContext('sveet') as SveetContext;
 	const { sveet, numberOfRows, numberOfColumns, activeCell } = currentSveet;
+
+	let columnHeaderHeight = 20;
+	let rowHeaderWidth = 50;
+	let rowHeights = new Array(numberOfRows).fill(20);
+	let columnWidths = new Array(numberOfRows).fill(50);
+	$: increaseDecreaseRows(numberOfRows);
+	$: increaseDecreaseColumns(numberOfColumns);
+
+	let columnResizeGuidePosition:
+		| { column: number; leftPosition: number; leftLimit: number }
+		| undefined = undefined;
+
+	let container: HTMLElement;
+
+	function increaseDecreaseRows(numberOfRows: number) {
+		if (rowHeights.length < numberOfRows) {
+			// increase number of rows
+			for (let i = rowHeights.length; i < numberOfRows + 1; i++) {
+				rowHeights.push(20);
+			}
+			rowHeights = rowHeights;
+		} else {
+			// decrease number of rows
+			rowHeights = rowHeights.slice(0, numberOfRows + 1);
+		}
+	}
+	function increaseDecreaseColumns(numberOfColumns: number) {
+		if (columnWidths.length < numberOfColumns) {
+			// increase number of rows
+			for (let i = columnWidths.length; i < numberOfColumns + 1; i++) {
+				columnWidths.push(50);
+			}
+			columnWidths = columnWidths;
+		} else {
+			// decrease number of rows
+			columnWidths = columnWidths.slice(0, numberOfColumns + 1);
+		}
+	}
 
 	const keyDownToDelta = {
 		ArrowUp: { rowDirection: -1 },
@@ -130,16 +168,47 @@
 	function waitForBindingForColumnRowHeadersToFinish() {
 		return tick();
 	}
+
+	function hintResizeColumn(column: number) {
+		let targetPosition = rowHeaderWidth;
+		for (let i = 0; i <= column; i++) {
+			targetPosition += columnWidths[i];
+		}
+		columnResizeGuidePosition = {
+			column,
+			leftPosition: targetPosition,
+			leftLimit: targetPosition - columnWidths[column]
+		};
+	}
+	function unhintResizeColumn() {
+		columnResizeGuidePosition = undefined;
+	}
+	function resizeColumn(event: CustomEvent<{ x: number; column: number }>) {
+		const { x, column } = event.detail;
+		let width = x - rowHeaderWidth;
+		for (let i = 0; i < column; i++) {
+			width -= columnWidths[i];
+		}
+		columnWidths[column] = width;
+	}
 </script>
 
 <svelte:body on:keydown={onKeydown} />
 
 <main
+	bind:this={container}
 	use:scrollIntoView={$activeCell}
 	style:--rows={numberOfRows}
 	style:--columns={numberOfColumns}
 >
-	<div>
+	<div
+		style:grid-template-rows={columnHeaderHeight +
+			'px ' +
+			rowHeights.map((height) => height + 'px').join(' ')}
+		style:grid-template-columns={rowHeaderWidth +
+			'px ' +
+			columnWidths.map((width) => width + 'px').join(' ')}
+	>
 		{#each { length: numberOfColumns } as _, column}
 			{#each { length: numberOfRows } as _, row}
 				<Cell
@@ -161,6 +230,7 @@
 				active={$activeCell?.column === column}
 				{column}
 				value={colName}
+				on:hintResizeColumn={() => hintResizeColumn(column)}
 			/>
 		{/each}
 
@@ -174,6 +244,13 @@
 			/>
 		{/each}
 	</div>
+	<ColumnResizeGuide
+		{columnHeaderHeight}
+		{container}
+		{columnResizeGuidePosition}
+		on:unhintResizeColumn={unhintResizeColumn}
+		on:resize={resizeColumn}
+	/>
 </main>
 
 <style>
@@ -182,10 +259,9 @@
 		grid-area: sheet;
 		overflow: scroll;
 		z-index: var(--z-index-main);
+		position: relative;
 	}
 	div {
 		display: grid;
-		grid-template-rows: repeat(calc(var(--rows) + 1), 20px);
-		grid-template-columns: repeat(calc(var(--columns) + 1), minmax(50px, 1fr));
 	}
 </style>

@@ -1,11 +1,18 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
 	export let column: number;
 	export let value: string;
 	export let active: boolean;
 	export let element: HTMLElement;
+
+	const dispatch = createEventDispatcher();
 </script>
 
-<div bind:this={element} class:active style:--column={column}>{value}</div>
+<div bind:this={element} class:active style:--column={column}>
+	{value}
+	<span on:mouseover={() => dispatch('hintResizeColumn')} />
+</div>
 
 <style>
 	div {
@@ -16,6 +23,15 @@
 		top: 0;
 		text-align: center;
 	}
+	span {
+		display: block;
+		width: 5px;
+		height: 100%;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
 	.active {
 		background-color: gray;
 	}
